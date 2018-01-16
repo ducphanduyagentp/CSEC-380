@@ -9,5 +9,5 @@ COPY index.html /var/www/html/
 
 EXPOSE 80
 
-ENTRYPOINT service apache2 start
+CMD /usr/sbin/apache2ctl -DFOREGROUND
 
