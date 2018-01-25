@@ -1,13 +1,7 @@
 # Dockerfile for apache webserver
 
-# Based on ubuntu 16.04 LTS
-FROM ubuntu:xenial
+FROM httpd:2.4
 
-RUN apt-get -y update && apt-get -y install apache2
-
-COPY index.html /var/www/html/
+COPY index.html /usr/local/apache2/htdocs/
 
 EXPOSE 80
-
-CMD /usr/sbin/apache2ctl -DFOREGROUND
-
