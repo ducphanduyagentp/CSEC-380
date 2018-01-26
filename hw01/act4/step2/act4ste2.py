@@ -3,7 +3,7 @@ import requests
 import netaddr
 from multiprocessing.dummy import Pool as ThreadPool
 
-PORTS = [80, 8080]
+PORTS = [8123, 3128, 8000, 8080, 80]
 
 def getRequest(url, proxies):
     return requests.get(url, proxies= {'http': proxies})
@@ -14,10 +14,11 @@ def proxy(ip, port):
 def checkProxy(ip):
     global PORTS
     ip = str(netaddr.IPAddress(ip))
+    print 'Checking {}...'.format(ip)
     for port in PORTS:
         try:
-            r = getRequest('http://www.0xf.tech/', proxy(ip, port))
-            if r.status_code == 200:
+            r1 = getRequest('http://www.0xf.tech/', proxy(ip, port))
+            if r1.status_code == 200 and '<title>ComChat: Making close distance closer</title>' in r1.text:
                 print '{}:{}'.format(ip, port)
                 return
         except:
@@ -29,7 +30,8 @@ def main():
         exit(1)
     startIP = netaddr.IPAddress(sys.argv[1])
     endIP = netaddr.IPAddress(sys.argv[2])
-    pool = ThreadPool(4)
+
+    pool = ThreadPool(8)
     r = pool.map(checkProxy, range(int(startIP), int(endIP) + 1))
     pool.close()
     pool.join()
