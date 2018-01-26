@@ -1,9 +1,0 @@
-services:
-  webserver:
-    build: ./act1/
-    ports:
-      - "80:80"
-  cache:
-    build: ./act2/nginx/
-    ports:
-      - "8080:8080"

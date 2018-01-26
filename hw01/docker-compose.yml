@@ -3,12 +3,16 @@ services:
   webserver:
     build: ./act1/
     ports:
-      - "80:80"
+      - "8001:80"
   webserver2:
-    build: ./act1/
+    build: ./act3/webserver/
     ports:
-      - "80:8001"
+      - "8002:80"
   cache:
-    build: ./act2/submit/
+    build: ./act2/
     ports:
       - "8080:8080"
+  loadbalancer:
+    build: ./act3/loadbalancer/
+    ports:
+      - "8003:80"
