@@ -7,7 +7,7 @@ PORTS = [80, 8080, 8123, 3128, 8000]
 
 
 def getRequest(url, proxies):
-    return requests.get(url, proxies= {'http': proxies}, timeout=5.0)
+    return requests.get(url, proxies={'http': proxies}, timeout=5.0)
 
 
 def proxy(ip, port):
@@ -17,11 +17,11 @@ def proxy(ip, port):
 def checkProxy(ip):
     global PORTS
     ip = str(netaddr.IPAddress(ip))
-    print 'Checking {}...'.format(ip)
     for port in PORTS:
         try:
             r1 = getRequest('http://www.0xf.tech/', proxy(ip, port))
-            if r1.status_code == 200 and '<title>ComChat: Making close distance closer</title>' in r1.text:
+            if r1.status_code == 200 and \
+            '<title>ComChat: Making close distance closer</title>' in r1.text:
                 print '{}:{}'.format(ip, port)
                 return
         except:
