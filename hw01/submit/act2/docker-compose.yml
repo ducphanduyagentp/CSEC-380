@@ -1,0 +1,10 @@
+version: "3"
+services:
+  webserver:
+    build: ./webserver/
+    ports:
+      - "8001:80"
+  cache:
+    build: ./cacheserver/
+    ports:
+      - "8080:8080"
