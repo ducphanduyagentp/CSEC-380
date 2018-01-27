@@ -1,9 +1,9 @@
 import requests
 
+
 def main():
-	r = requests.get('http://csec.rit.edu')
+    r = requests.get('http://csec.rit.edu')
 
 
 if __name__ == '__main__':
-	main()
-
+    main()

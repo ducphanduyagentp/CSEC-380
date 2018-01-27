@@ -20,12 +20,11 @@ def checkProxy(ip):
     for port in PORTS:
         try:
             r1 = getRequest('http://www.0xf.tech/', proxy(ip, port))
-            if r1.status_code == 200 and \
-            '<title>ComChat: Making close distance closer</title>' in r1.text:
-                print '{}:{}'.format(ip, port)
+            if r1.status_code == 200 and '<title>ComChat: Making close distance closer</title>' in r1.text:
+                print '{}'.format(ip)
                 return
         except:
-             pass
+            pass
 
 
 def main():
@@ -43,4 +42,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

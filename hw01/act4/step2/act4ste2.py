@@ -25,7 +25,7 @@ def checkProxy(ip):
                 print '{}:{}'.format(ip, port)
                 return
         except:
-             pass
+            pass
 
 
 def main():
@@ -43,4 +43,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
