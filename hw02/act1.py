@@ -6,7 +6,7 @@ PORT = 82
 
 def main():
     s = httpSocket(HOSTNAME, PORT)
-    print s.post('http://csec380-core.csec.rit.edu:82/')['data']
+    print s.post('http://csec380-core.csec.rit.edu:82/')['data'].strip('"')
 
 
 if __name__ == '__main__':

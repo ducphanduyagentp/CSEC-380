@@ -58,3 +58,19 @@ class httpSocket:
         header = self.recvHTTPHeader()
         data = self.httpSock.recv(int(header['Content-Length']))
         return {'request': payload, 'header': header, 'data': data}
+
+    def postRaw(self, payload):
+        self.httpSock.send(payload)
+        header = ""
+        while True:
+            header += self.httpSock.recv(1)
+            if header.endswith('\r\n' * 2):
+                break
+
+        response = ''
+        while True:
+            response += self.httpSock.recv(1)
+            if response.endswith('\r\n' * 2):
+                break
+
+        return {'header': header, 'response': response}
