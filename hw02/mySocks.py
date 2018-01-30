@@ -1,9 +1,6 @@
 import socket
 from urlparse import urlparse
 
-HOSTNAME = 'csec380-core.csec.rit.edu'
-PORT = 82
-
 
 class httpSocket:
 
@@ -14,8 +11,8 @@ class httpSocket:
         ip = socket.gethostbyname(hostname)
         try:
             self.httpSock.connect((ip, port))
-        except:
-            print 'Error creating socket'
+        except e:
+            print 'Error creating socket:', e
             exit(1)
 
     def recvHTTPHeader(self):
@@ -34,8 +31,9 @@ class httpSocket:
         return realHeader
 
     def get(self, url, params={}, query={}, useragent=useragent):
+        data = '?' + '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
-        payload = "GET {} HTTP/1.1\n".format(parsed.path)
+        payload = "GET {} HTTP/1.1\n".format(parsed.path + data)
         payload += "Host: {}\n".format(parsed.netloc)
         payload += "User-Agent: {}\n".format(useragent)
         payload += "Accept: */*\n"
@@ -43,21 +41,20 @@ class httpSocket:
         self.httpSock.send(payload)
         header = self.recvHTTPHeader()
         data = self.httpSock.recv(int(header['Content-Length']))
-        return {'header': header, 'data': data}
+        return {'request': payload, 'header': header, 'data': data}
 
     def post(self, url, params={}, query={}, useragent=useragent):
+        data = '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
         payload = "POST {} HTTP/1.1\n".format(parsed.path)
         payload += "Host: {}\n".format(parsed.netloc)
         payload += "User-Agent: {}\n".format(useragent)
         payload += "Accept: */*\n"
+        payload += "Content-Type: application/x-www-form-urlencoded\n"
+        payload += "Content-Length: {}\n".format(len(data))
         payload += "\n"
-
-
-def main():
-    s = httpSocket(HOSTNAME, PORT)
-    print s.get('http://csec380-core.csec.rit.edu:82/')
-
-
-if __name__ == '__main__':
-    main()
+        payload += data + '\n'
+        self.httpSock.send(payload)
+        header = self.recvHTTPHeader()
+        data = self.httpSock.recv(int(header['Content-Length']))
+        return {'request': payload, 'header': header, 'data': data}
