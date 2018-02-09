@@ -1,16 +1,16 @@
 import zlib
 import urllib
-from mySocks import *
+from my_socks import *
 
 HOSTNAME = 'csec380-core.csec.rit.edu'
 PORT = 82
 
 
-def getFlag1(s):
+def get_flag_1(s):
     print s.post('http://{}:{}/'.format(HOSTNAME, PORT))['data'].strip('"')
 
 
-def getFlag2(s):
+def get_flag_2(s):
     token = s.post('http://{}:{}/getSecure'.format(HOSTNAME, PORT))
     token = token['data']
     token = token.strip('"').split(': ')[1]
@@ -19,7 +19,7 @@ def getFlag2(s):
     print r['data'].strip('"')
 
 
-def getFlag3(s):
+def get_flag_3(s):
     token = s.post('http://{}:{}/getSecure'.format(HOSTNAME, PORT))
     token = token['data']
     token = token.strip('"').split(': ')[1]
@@ -45,7 +45,7 @@ def fakeIEHeader(path, data):
     return header
 
 
-def getFlag4(s):
+def get_flag_4(s):
     username = 'fpasswd'
     token = s.post('http://{}:{}/getSecure'.format(HOSTNAME, PORT))
     token = token['data']
@@ -69,10 +69,10 @@ def getFlag4(s):
 
 def main():
     s = HTTPSocket(HOSTNAME, PORT)
-    getFlag1(s)
-    getFlag2(s)
-    getFlag3(s)
-    getFlag4(s)
+    get_flag_1(s)
+    get_flag_2(s)
+    get_flag_3(s)
+    get_flag_4(s)
 
 
 if __name__ == '__main__':
