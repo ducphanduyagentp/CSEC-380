@@ -12,9 +12,12 @@ def courseEntry(tag):
 
 def main():
     s = HTTPSocket(HOST, PORT)
+    s.create()
+
     html = s.get("https://www.rit.edu/programs/computing-security-bs")['data']
     html = html.decode('utf-8')
-    
+    s.close()
+
     soup = BeautifulSoup(html, 'html.parser')
     courses = soup.find_all(courseEntry)
     
@@ -23,7 +26,6 @@ def main():
         course = course.find_all('td')
         result.append('{}: {}'.format(course[0].string.replace(u'\xa0', u'').strip(' '), course[1].string.replace(u'\xa0', u'').strip(' ')))
     
-    result = list(set(result))
     result.sort()
     
     for r in result:

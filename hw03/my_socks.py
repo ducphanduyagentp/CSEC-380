@@ -5,17 +5,28 @@ from urlparse import urlparse
 
 class HTTPSocket:
     CRLF = '\r\n'
-    HTTPSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     useragent = 'supersecretagent'
+    HTTPSock = None
+
     def __init__(self, hostname, port):
         self.HOST = hostname
         self.PORT = port
-        ip = socket.gethostbyname(hostname)
+        self.IP = socket.gethostbyname(hostname)
+
+    def create(self):
+        if self.HTTPSock == None:
+            self.HTTPSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.HTTPSock.connect((ip, port))
+            self.HTTPSock.connect((self.IP, self.PORT))
         except:
             print 'Error creating socket:'
+            raise
             exit(1)
+        
+
+    def close(self):
+        self.HTTPSock.shutdown(socket.SHUT_RDWR)
+        self.HTTPSock.close()
 
     def recvuntil(self, pattern):
         data = ''
@@ -42,8 +53,8 @@ class HTTPSocket:
         while True:
             b = self.HTTPSock.recv(1)
             header += b
-            if header.endswith('\n' * 2) or header.endswith(self.CRLF * 2):
-                break     
+            if header.endswith(self.CRLF * 2):
+                break
         realHeader = {}
         header = header.split(self.CRLF)
         header = [hdr.strip().split(': ') for hdr in header if hdr != '']
@@ -52,16 +63,18 @@ class HTTPSocket:
             realHeader[hdr[0]] = hdr[1]
         return realHeader
 
-    def get(self, url, params={}, query={}, useragent=useragent):
+    def get(self, url, otherHeaders={}, params={}, query={}, useragent=useragent):
         data = '?' + '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
-        payload = "GET {} HTTP/1.1".format(parsed.path + data) + self.CRLF
+        payload = "GET {} HTTP/1.1".format(parsed.path + (data if len(data) > 1 else '')) + self.CRLF
         payload += "Host: {}".format(self.HOST + ('' if self.PORT == 80 else ':{}'.format(self.PORT))) + self.CRLF
         payload += "User-Agent: {}".format(useragent) + self.CRLF
         payload += "Accept: */*" + self.CRLF
-        payload += "Connection: keep-alive" + self.CRLF
-        payload += self.CRLF
-        self.HTTPSock.send(payload)
+        payload += self.CRLF.join(['{}: {}'.format(k, v) for k, v in zip(otherHeaders.keys(), otherHeaders.values())])
+        payload += self.CRLF * 2
+
+        t = self.HTTPSock.sendall(payload)
+        assert t == None
         header = self.recvHTTPHeader()
         data = self.recvdata(header)
         return {'request': payload, 'header': header, 'data': data}

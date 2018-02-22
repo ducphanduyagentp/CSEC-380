@@ -6,4 +6,8 @@ RUN apk add --no-cache python && \
     python -m ensurepip && \
     pip install beautifulsoup4
 
-CMD python /act1step1.py
+CMD for i in {1..100}; do \
+        echo "Trial $i"
+        python /act1step2.py \
+        echo "Done $i"
+    done
