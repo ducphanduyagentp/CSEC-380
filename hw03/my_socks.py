@@ -7,8 +7,9 @@ class HTTPSocket:
     CRLF = '\r\n'
     HTTPSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     useragent = 'supersecretagent'
-
     def __init__(self, hostname, port):
+        self.HOST = hostname
+        self.PORT = port
         ip = socket.gethostbyname(hostname)
         try:
             self.HTTPSock.connect((ip, port))
@@ -54,12 +55,12 @@ class HTTPSocket:
     def get(self, url, params={}, query={}, useragent=useragent):
         data = '?' + '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
-        payload = "GET {} HTTP/1.1\r\n".format(parsed.path + data)
-        payload += "Host: {}\r\n".format(parsed.netloc)
-        payload += "User-Agent: {}\r\n".format(useragent)
-        payload += "Accept: */*\r\n"
-        payload += "Connection: keep-alive\r\n"
-        payload += "\r\n"
+        payload = "GET {} HTTP/1.1".format(parsed.path + data) + self.CRLF
+        payload += "Host: {}".format(self.HOST + ('' if self.PORT == 80 else ':{}'.format(self.PORT))) + self.CRLF
+        payload += "User-Agent: {}".format(useragent) + self.CRLF
+        payload += "Accept: */*" + self.CRLF
+        payload += "Connection: keep-alive" + self.CRLF
+        payload += self.CRLF
         self.HTTPSock.send(payload)
         header = self.recvHTTPHeader()
         data = self.recvdata(header)
@@ -68,14 +69,14 @@ class HTTPSocket:
     def post(self, url, params={}, query={}, useragent=useragent):
         data = '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
-        payload = "POST {} HTTP/1.1\r\n".format(parsed.path)
-        payload += "Host: {}\r\n".format(parsed.netloc)
-        payload += "User-Agent: {}\r\n".format(useragent)
-        payload += "Accept: */*\r\n"
-        payload += "Content-Type: application/x-www-form-urlencoded\r\n"
-        payload += "Content-Length: {}\r\n".format(len(data))
-        payload += "\r\n"
-        payload += data + '\n'
+        payload = "POST {} HTTP/1.1".format(parsed.path) + self.CRLF
+        payload += "Host: {}".format(parsed.netloc) + self.CRLF
+        payload += "User-Agent: {}".format(useragent) + self.CRLF
+        payload += "Accept: */*" + self.CRLF
+        payload += "Content-Type: application/x-www-form-urlencoded" + self.CRLF
+        payload += "Content-Length: {}".format(len(data)) + self.CRLF
+        payload += self.CRLF
+        payload += data + self.CRLF
         self.HTTPSock.send(payload)
         header = self.recvHTTPHeader()
         data = self.recvdata(header)
