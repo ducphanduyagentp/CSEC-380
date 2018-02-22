@@ -1,6 +1,7 @@
 *.swp
 *secret*
 *.pyc
+*.jpg
 skitter/
 hw03/bin/
 hw03/lib/

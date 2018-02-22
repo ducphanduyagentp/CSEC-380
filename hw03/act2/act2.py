@@ -9,9 +9,10 @@ PORT = 443
 
 def main():
     s = HTTPSocket(HOST, PORT)
-    s.create()
+    s.create(secure=True)
 
     r = s.get('https://www.rit.edu/')
+    print r['request']
     print r['data']
 
 

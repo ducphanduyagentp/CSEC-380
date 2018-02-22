@@ -20,14 +20,14 @@ def main():
 
     soup = BeautifulSoup(html, 'html.parser')
     courses = soup.find_all(courseEntry)
-    
+
     result = []
     for course in courses:
         course = course.find_all('td')
         result.append('{}: {}'.format(course[0].string.replace(u'\xa0', u'').strip(' '), course[1].string.replace(u'\xa0', u'').strip(' ')))
-    
+
     result.sort()
-    
+
     for r in result:
         print r
 

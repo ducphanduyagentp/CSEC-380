@@ -37,11 +37,11 @@ def main():
 
     html = html['data']
     html = html.decode('utf-8')
-    
+
     soup = BeautifulSoup(html, 'html.parser')
     images = soup.find_all('div', {'class': 'staff'})
     images = [x.find('img')['src'] for x in images]
-    
+
     pool = ThreadPool(500)
     pool.map(get_image, images)
 
