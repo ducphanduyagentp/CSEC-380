@@ -22,6 +22,20 @@ class HTTPSocket:
             data += self.HTTPSock.recv(1)
         return data
 
+    def recvdata(self, header):
+        if 'Transfer-Encoding' in header and header['Transfer-Encoding'] == 'chunked':
+            data = ''
+            while True:
+                length = self.recvuntil(self.CRLF)
+                length = int(length, 16)
+                if length == 0:
+                    break
+                data += self.HTTPSock.recv(length)
+                self.recvuntil(self.CRLF)
+        else:
+            data = self.HTTPSock.recv(int(header['Content-Length']))
+        return data
+
     def recvHTTPHeader(self):
         header = ''
         while True:
@@ -48,18 +62,7 @@ class HTTPSocket:
         payload += "\r\n"
         self.HTTPSock.send(payload)
         header = self.recvHTTPHeader()
-
-        if 'Transfer-Encoding' in header and header['Transfer-Encoding'] == 'chunked':
-            data = ''
-            while True:
-                length = self.recvuntil(self.CRLF)
-                length = int(length, 16)
-                if length == 0:
-                    break
-                data += self.HTTPSock.recv(length)
-                self.recvuntil(self.CRLF)
-        else:
-            data = self.HTTPSock.recv(int(header['Content-Length']))
+        data = self.recvdata(header)
         return {'request': payload, 'header': header, 'data': data}
 
     def post(self, url, params={}, query={}, useragent=useragent):
@@ -75,7 +78,7 @@ class HTTPSocket:
         payload += data + '\n'
         self.HTTPSock.send(payload)
         header = self.recvHTTPHeader()
-        data = self.HTTPSock.recv(int(header['Content-Length']))
+        data = self.recvdata(header)
         return {'request': payload, 'header': header, 'data': data}
 
     def postRaw(self, payload):

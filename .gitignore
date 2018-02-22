@@ -2,3 +2,8 @@
 *secret*
 *.pyc
 skitter/
+hw03/bin/
+hw03/lib/
+hw03/include/
+hw03/local/
+hw03/pip-selfcheck.json
