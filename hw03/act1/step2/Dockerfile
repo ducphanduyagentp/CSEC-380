@@ -1,13 +1,10 @@
 FROM alpine
 
-COPY act1step2.py my_socks.py /
+COPY act1step2.py my_socks.py run.sh /
 
-RUN apk add --no-cache python && \
+RUN apk add --no-cache python bash && \
     python -m ensurepip && \
     pip install beautifulsoup4
 
-CMD for i in {1..100}; do \
-        echo "Trial $i"
-        python /act1step2.py \
-        echo "Done $i"
-    done
+CMD chmod +x run.sh && \
+    bash run.sh
