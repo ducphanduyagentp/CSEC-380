@@ -78,7 +78,7 @@ class Spiderman:
                 html = html.replace(chr(c), '')
             html = html.decode('utf-8')
         except:
-            print 'Error getting response'
+            #print 'Error getting response'
             return None
         return html
 
