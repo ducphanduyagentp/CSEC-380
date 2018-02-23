@@ -58,7 +58,7 @@ class Spiderman:
         return not self.emailFilter(tag) and (tag.has_attr('href') and tag['href'] != '#')
 
     def emailFilter(self, tag):
-        return tag.has_attr('href') and ('mailto:' in tag['href']) and ('@' in tag['href'])
+        return tag.has_attr('href') and ('mailto:' in tag['href']) and ('@' in tag['href']) and (tag['href'].split('@')[1].count('.') > 0)
 
     """
     Get the content of the url.
@@ -123,7 +123,8 @@ class Spiderman:
             self.DB_URL[urlDepth].add(link)
             self.visited[link] = 'True'
             emails = self.crawl_emails(link)
-            print 'Running ...'
+            for e in emails:
+                print e
 
             self.DB_EMAIL.update(set(emails))
 
@@ -156,6 +157,9 @@ class Spiderman:
                 self.DB_URL[urlDepth] = set()
             self.DB_URL[urlDepth].add(link)
             self.visited[link] = 'True'
+
+            print link
+
             subLinks = self.crawl_urls(link)
             for sublink in subLinks:
                 if self.calculate_depth(sublink) > depth:
