@@ -13,7 +13,7 @@ def get_image(url):
     s.create()
 
     url = 'http://www.rit.edu{}'.format(url)
-    r = s.get(url, otherHeaders={'Connection': 'keep-alive', 'Accept-Encoding': 'gzip, deflate'})
+    r = s.get(url, otherHeaders={'Accept-Encoding': 'gzip, deflate'})
     s.close()
 
     assert int(r['header']['status']) == 200
@@ -32,7 +32,7 @@ def main():
     s = HTTPSocket(HOST, PORT)
     s.create()
 
-    html = s.get("http://www.rit.edu/gccis/computingsecurity/people", otherHeaders={'Connection': 'keep-alive'})
+    html = s.get("http://www.rit.edu/gccis/computingsecurity/people")
     s.close()
 
     html = html['data']
@@ -41,7 +41,6 @@ def main():
     soup = BeautifulSoup(html, 'html.parser')
     images = soup.find_all('div', {'class': 'staff'})
     images = [x.find('img')['src'] for x in images]
-
     pool = ThreadPool(500)
     pool.map(get_image, images)
 

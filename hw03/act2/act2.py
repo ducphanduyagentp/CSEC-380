@@ -1,19 +1,15 @@
-import os
-
+from our_spiderman import *
 from my_socks import *
-from bs4 import BeautifulSoup
-from multiprocessing.dummy import Pool as ThreadPool
 
-HOST = 'www.rit.edu'
 PORT = 443
 
 def main():
-    s = HTTPSocket(HOST, PORT)
-    s.create(secure=True)
 
-    r = s.get('https://www.rit.edu/')
-    print r['request']
-    print r['data']
+    spider = Spiderman('https://www.rit.edu', PORT)
+
+    links = spider.crawl_urls('https://www.rit.edu/')
+    for l in links:
+        print l
 
 
 if __name__ == '__main__':

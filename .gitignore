@@ -3,6 +3,7 @@
 *.pyc
 *.jpg
 skitter/
+hw03/share/
 hw03/bin/
 hw03/lib/
 hw03/include/
