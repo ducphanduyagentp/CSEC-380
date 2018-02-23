@@ -80,11 +80,13 @@ class Spiderman:
         except:
             print 'Error getting response'
             raise
-            exit(1)
+            return None
         return html
 
     def crawl_emails(self, url):
         html = self.getPage(url)
+        if html == None:
+            return []
         soup = BeautifulSoup(html, 'html.parser')
         emails = soup.find_all(self.emailFilter)
         emails = [urlparse(e['href'].split('mailto:')[1].strip(' \t\n')).path for e in emails]
@@ -92,6 +94,8 @@ class Spiderman:
 
     def crawl_urls(self, url):
         html = self.getPage(url)
+        if html == None:
+            return []
         soup = BeautifulSoup(html, 'html.parser')
         links = soup.find_all(self.linkFilter)
         links = [link['href'] for link in links if self.is_in_scope(link['href'])]
