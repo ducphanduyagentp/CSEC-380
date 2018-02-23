@@ -6,6 +6,12 @@ from urlparse import urlparse
 class HTTPSocket:
     CRLF = '\r\n'
     useragent = 'supersecretagent'
+    #useragent = 'curl/7.58.0'
+    #useragent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0'
+    accept_language = 'en-US,en;q=0.5'
+    connection = 'keep-alive'
+    pragma = 'no-cache'
+
     HTTPSock = None
 
     def __init__(self, hostname, port):
@@ -18,7 +24,9 @@ class HTTPSocket:
             self.HTTPSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if secure:
-                self.HTTPSock = ssl.wrap_socket(self.HTTPSock)
+                context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+                context.set_ciphers('ALL')
+                self.HTTPSock = context.wrap_socket(self.HTTPSock, server_hostname=self.HOST)
             self.HTTPSock.connect((self.IP, self.PORT))
         except:
             print 'Error creating socket:'
@@ -37,21 +45,23 @@ class HTTPSocket:
         return data
 
     def recvdata(self, header):
+        data = ''
         if 'Transfer-Encoding' in header and header['Transfer-Encoding'] == 'chunked':
-            data = ''
             while True:
                 length = self.recvuntil(self.CRLF)
                 try:
                     lengthN = int(length, 16)
                     if lengthN == 0:
                         break
-                    data += self.HTTPSock.recv(lengthN)
-                    self.recvuntil(self.CRLF)
+                    data += self.recvuntil(self.CRLF)
                 except:
                     data += length
                     continue
         else:
-            data = self.HTTPSock.recv(int(header['Content-Length']))
+            length = int(header['Content-Length'])
+            while len(data) != length:
+                data += self.HTTPSock.recv(1)
+            assert len(data) == length
         return data
 
     def recvHTTPHeader(self):
@@ -72,10 +82,13 @@ class HTTPSocket:
     def get(self, url, otherHeaders={}, params={}, query={}, useragent=useragent):
         data = '?' + '&'.join(['{}={}'.format(k, v) for k, v in zip(query.keys(), query.values())])
         parsed = urlparse(url)
-        payload = "GET {} HTTP/1.1".format(parsed.path + (data if len(data) > 1 else '')) + self.CRLF
+        payload = "GET {} HTTP/1.1".format((parsed.path if len(parsed.path) > 0 else '/') + (data if len(data) > 1 else '')) + self.CRLF
         payload += "Host: {}".format(self.HOST + ('' if self.PORT == 80 or self.PORT == 443 else ':{}'.format(self.PORT))) + self.CRLF
         payload += "User-Agent: {}".format(useragent) + self.CRLF
         payload += "Accept: */*" + self.CRLF
+        payload += "Accept-Language: {}".format(self.accept_language) + self.CRLF
+        payload += "Connection: {}".format(self.connection) + self.CRLF
+        payload += "Pragma: {}".format(self.pragma) + self.CRLF
         payload += self.CRLF.join(['{}: {}'.format(k, v) for k, v in zip(otherHeaders.keys(), otherHeaders.values())])
         payload += self.CRLF * 2
 
