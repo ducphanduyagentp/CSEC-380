@@ -37,7 +37,8 @@ class Spiderman:
     The depth of an url is calculated based on the path.
     url: The url may or may not include the hostname
     """
-    def calculate_depth(self, url):
+    @staticmethod
+    def calculate_depth(url):
         parsed = urlparse(url)
         path = parsed.path
         while '//' in path:
@@ -102,7 +103,7 @@ class Spiderman:
 
     def crawl_all_emails(self, url, depth=1):
         depth = self.DEPTH
-        if self.calculate_depth(url) > depth:
+        if Spiderman.calculate_depth(url) > depth:
             return
 
         links = self.crawl_urls(url)
@@ -111,7 +112,7 @@ class Spiderman:
         while len(links) > 0:
 
             link = links.pop()
-            urlDepth = self.calculate_depth(link)
+            urlDepth = Spiderman.calculate_depth(link)
 
             if link in self.visited:
                 continue
@@ -130,14 +131,14 @@ class Spiderman:
 
             subLinks = self.crawl_urls(link)
             for sublink in subLinks:
-                if self.calculate_depth(sublink) > depth:
+                if Spiderman.calculate_depth(sublink) > depth:
                     continue
                 if sublink not in links and sublink not in self.visited:
                     links.add(sublink)
 
     def crawl_all_urls(self, url):
         depth = self.DEPTH
-        if self.calculate_depth(url) > depth:
+        if Spiderman.calculate_depth(url) > depth:
             return
 
         links = self.crawl_urls(url)
@@ -162,7 +163,7 @@ class Spiderman:
 
             subLinks = self.crawl_urls(link)
             for sublink in subLinks:
-                if self.calculate_depth(sublink) > depth:
+                if Spiderman.calculate_depth(sublink) > depth:
                     continue
                 if sublink not in links and sublink not in self.visited:
                     links.add(sublink)
