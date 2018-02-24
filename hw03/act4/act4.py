@@ -2,6 +2,7 @@ from our_spiderman import *
 from my_socks import *
 import sys
 import urllib
+import urlparse
 
 HOST = 'csec380-core.csec.rit.edu'
 PORT = 83
@@ -42,7 +43,7 @@ def main():
             continue
 
         if isSecret(r['data']):
-            f.write(urlparse.urlparse(v).path.rstrip('/'))
+            f.write(urlparse.urlparse(v).path.rstrip('/') + '\n')
 
         if Spiderman.calculate_depth(url) == DEPTH:
             continue
@@ -59,7 +60,7 @@ def main():
                     continue
                 q.append(v)
                 if isSecret(r['data']):
-                    f.write(urlparse.urlparse(v).path.rstrip('/'))
+                    f.write(urlparse.urlparse(v).path.rstrip('/') + '\n')
             except:
                 pass
 
