@@ -100,7 +100,7 @@ class Spiderman:
         links = [link['href'] for link in links if self.is_in_scope(link['href'])]
         return list(set(self.normalizeURLs(links)))
 
-    def crawl_all_emails(self, url, depth=1):
+    def crawl_all_emails(self, lock, url):
         depth = self.DEPTH
         if self.calculate_depth(url) > depth:
             return
@@ -118,15 +118,19 @@ class Spiderman:
             elif urlDepth > depth:
                 continue
 
+            lock.acquire()
             if urlDepth not in self.DB_URL:
                 self.DB_URL[urlDepth] = set()
             self.DB_URL[urlDepth].add(link)
             self.visited[link] = 'True'
             emails = self.crawl_emails(link)
-            for e in emails:
-                print e
 
             self.DB_EMAIL.update(set(emails))
+            if len(set(emails)) > 1000:
+                for e in list(set(self.DB_EMAIL)):
+                    print e.strip(' \t\r\n')
+            exit(0)
+            lock.release()
 
             subLinks = self.crawl_urls(link)
             for sublink in subLinks:
@@ -135,7 +139,7 @@ class Spiderman:
                 if sublink not in links and sublink not in self.visited:
                     links.add(sublink)
 
-    def crawl_all_urls(self, url):
+    def crawl_all_urls(self, lock, url):
         depth = self.DEPTH
         if self.calculate_depth(url) > depth:
             return
@@ -153,12 +157,13 @@ class Spiderman:
             elif urlDepth > depth:
                 continue
 
+            lock.acquire()
             if urlDepth not in self.DB_URL:
                 self.DB_URL[urlDepth] = set()
             self.DB_URL[urlDepth].add(link)
             self.visited[link] = 'True'
-
             print link
+            lock.release()
 
             subLinks = self.crawl_urls(link)
             for sublink in subLinks:
@@ -177,7 +182,10 @@ class Spiderman:
         self.DEPTH = depth
         links = self.crawl_urls(self.URL)
         links = list(set(links))
-        pool = ThreadPool(50)
-        pool.map(self.crawl_all_urls if not email else self.crawl_all_emails, links)
-        pool.close()
-        pool.join()
+        lock = Lock()
+        for _ in range(5):
+            Process(target=self.crawl_all_emails if emails else self.crawl_all_urls, args=(lock, links)).start()
+        # pool = ThreadPool(50)
+        # pool.map(self.crawl_all_urls if not email else self.crawl_all_emails, links)
+        # pool.close()
+        # pool.join()
