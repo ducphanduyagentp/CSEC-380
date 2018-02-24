@@ -101,39 +101,42 @@ class Spiderman:
         return list(set(self.normalizeURLs(links)))
 
     def crawl_all_emails(self, url, depth=1):
-        depth = self.DEPTH
-        if self.calculate_depth(url) > depth:
-            return
+        try:
+            depth = self.DEPTH
+            if self.calculate_depth(url) > depth:
+                return
 
-        links = self.crawl_urls(url)
-        links = set(links)
+            links = self.crawl_urls(url)
+            links = set(links)
 
-        while len(links) > 0:
+            while len(links) > 0:
 
-            link = links.pop()
-            urlDepth = self.calculate_depth(link)
+                link = links.pop()
+                urlDepth = self.calculate_depth(link)
 
-            if link in self.visited:
-                continue
-            elif urlDepth > depth:
-                continue
-
-            if urlDepth not in self.DB_URL:
-                self.DB_URL[urlDepth] = set()
-            self.DB_URL[urlDepth].add(link)
-            self.visited[link] = 'True'
-            emails = self.crawl_emails(link)
-            for e in emails:
-                print e
-
-            self.DB_EMAIL.update(set(emails))
-
-            subLinks = self.crawl_urls(link)
-            for sublink in subLinks:
-                if self.calculate_depth(sublink) > depth:
+                if link in self.visited:
                     continue
-                if sublink not in links and sublink not in self.visited:
-                    links.add(sublink)
+                elif urlDepth > depth:
+                    continue
+
+                if urlDepth not in self.DB_URL:
+                    self.DB_URL[urlDepth] = set()
+                self.DB_URL[urlDepth].add(link)
+                self.visited[link] = 'True'
+                emails = self.crawl_emails(link)
+                for e in emails:
+                    print e
+
+                self.DB_EMAIL.update(set(emails))
+
+                subLinks = self.crawl_urls(link)
+                for sublink in subLinks:
+                    if self.calculate_depth(sublink) > depth:
+                        continue
+                    if sublink not in links and sublink not in self.visited:
+                        links.add(sublink)
+        except:
+            return
 
     def crawl_all_urls(self, url):
         depth = self.DEPTH
@@ -177,7 +180,7 @@ class Spiderman:
         self.DEPTH = depth
         links = self.crawl_urls(self.URL)
         links = list(set(links))
-        pool = ThreadPool(50)
+        pool = ThreadPool(10)
         pool.map(self.crawl_all_urls if not email else self.crawl_all_emails, links)
         pool.close()
         pool.join()
