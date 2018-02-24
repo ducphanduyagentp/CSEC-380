@@ -126,6 +126,8 @@ class Spiderman:
             emails = self.crawl_emails(link)
 
             self.DB_EMAIL.update(set(emails))
+            for e in emails:
+                print e.strip(' \t\r\n')
             if len(set(emails)) > 1000:
                 for e in list(set(self.DB_EMAIL)):
                     print e.strip(' \t\r\n')
@@ -180,11 +182,9 @@ class Spiderman:
 
     def crawl_like_nobody_is_watching(self, depth=1, email=False):
         self.DEPTH = depth
-        links = self.crawl_urls(self.URL)
-        links = list(set(links))
         lock = Lock()
         for _ in range(5):
-            Process(target=self.crawl_all_emails if email else self.crawl_all_urls, args=(lock, links)).start()
+            Process(target=self.crawl_all_emails if email else self.crawl_all_urls, args=(lock, self.URL)).start()
         # pool = ThreadPool(50)
         # pool.map(self.crawl_all_urls if not email else self.crawl_all_emails, links)
         # pool.close()
