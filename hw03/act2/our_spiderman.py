@@ -184,7 +184,7 @@ class Spiderman:
         links = list(set(links))
         lock = Lock()
         for _ in range(5):
-            Process(target=self.crawl_all_emails if emails else self.crawl_all_urls, args=(lock, links)).start()
+            Process(target=self.crawl_all_emails if email else self.crawl_all_urls, args=(lock, links)).start()
         # pool = ThreadPool(50)
         # pool.map(self.crawl_all_urls if not email else self.crawl_all_emails, links)
         # pool.close()
