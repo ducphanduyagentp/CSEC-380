@@ -1,0 +1,28 @@
+version: '2'
+services:
+  webserver:
+    build: .
+    ports:
+      - '80:80'
+  mariadb:
+    image: 'bitnami/mariadb:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'mariadb_data:/bitnami'
+  piwik:
+    image: 'bitnami/piwik:latest'
+    labels:
+      kompose.service.type: nodeport
+    ports:
+      - '8080:80'
+      - '443:443'
+    depends_on:
+      - mariadb
+    volumes:
+      - 'piwik_data:/bitnami'
+volumes:
+  mariadb_data:
+    driver: local
+  piwik_data:
+    driver: local
