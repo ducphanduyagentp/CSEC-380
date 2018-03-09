@@ -1,0 +1,2 @@
+- Search for the phrase "// FIX" with case-sensitive on to see all the fixes implemented
+- CSRF token is implemented to fix the issue.
