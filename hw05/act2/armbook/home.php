@@ -122,7 +122,7 @@ if($has_session){
 ?>
 	<link rel="stylesheet" type="text/css" href="background2.css" />
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-	<script src="js/jquery.js"></script>
+	<script nonce="YWhhaGEK" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/jquery.mousewheel-3.0.6.pack.js"></script>
 	<!-- Add fancyBox -->
 	<script type="text/javascript" src="js/source/jquery.fancybox.js?v=2.1.5"></script>

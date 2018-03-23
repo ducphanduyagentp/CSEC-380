@@ -10,7 +10,7 @@ if(isset($_SESSION['login'])){
 	header("Location: http://localhost/home.php");
 }
 ?>
-<script type="text/javascript" src="js/jquery.js"></script>
+<script nonce="YWhhaGEK" type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body>
