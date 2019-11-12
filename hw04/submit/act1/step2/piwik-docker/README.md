@@ -1,1 +1,0 @@
-- Default credentials for piwik is User:bitnami

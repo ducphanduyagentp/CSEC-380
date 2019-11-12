@@ -1,8 +1,0 @@
-129.21.183.63 - - [03/Mar/2018:23:08:46 +0000] "GET / HTTP/1.1" 200 3525 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 (KHTML, like Gecko) Chrome/15.0.87"
-129.21.183.63 - - [03/Mar/2018:23:08:46 +0000] "GET /icons/ubuntu-logo.png HTTP/1.1" 200 3623 "http://hmm.pwnie.tech/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 (KHTML, like Gecko) Chrome/15.0.87"
-176.32.33.238 - - [04/Mar/2018:01:55:25 +0000] "GET / HTTP/1.0" 200 6000 "-" "masscan/1.0 (https://github.com/robertdavidgraham/masscan)"
-194.79.34.118 - - [04/Mar/2018:07:12:06 +0000] "GET / HTTP/1.1" 400 0 "-" "-"
-71.6.202.198 - - [04/Mar/2018:08:01:25 +0000] "GET /ccvv HTTP/1.1" 404 442 "-" "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64)"
-5.188.9.50 - - [04/Mar/2018:13:10:31 +0000] "GET / HTTP/1.1" 200 3469 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"
-178.73.215.171 - - [04/Mar/2018:19:08:54 +0000] "GET / HTTP/1.0" 200 11595 "-" "-"
-141.212.122.64 - - [05/Mar/2018:00:37:27 +0000] "GET /x HTTP/1.1" 400 0 "-" "Telesphoreo"
